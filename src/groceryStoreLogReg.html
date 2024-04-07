@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en-US" style="height: 100%;">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<title>Grocery Store</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="./groceryStoreLogReg.js"></script>
+<style>
+    .bg-primary {
+        background-color: #366891 !important;
+        color: white;
+    }
+
+    .border-input {
+        box-sizing: border-box;
+        border: none;
+        border-bottom: 2px solid #f2e8e8;
+        background-color: transparent;
+        color: white;
+    }
+</style>
+
+<body style="height: 100%; background-color: #1a442e;">
+    <!-- Login UI -->
+    <div class="container row col-md-12" style="height: 100%;">
+        <div class="col-md-8 p-0">
+            <img src="./bgWall.jpeg" alt="" style="width: 100%;height: 100%;">
+        </div>
+        <div class="col-md-4 mt-5">
+            <!-- <h4>Log In</h4> -->
+            <div style="text-align: center;">
+                <img src="./logo.jpg" alt="" style="height: 80px;">
+            </div>
+            <form class="">
+                <div id="loginFormId" class="loginCls" style="margin-top: 7%;">
+                    <div class="form-group">
+                        <label class="text-white"><i class="fa fa-user"></i> User Name</label>
+                        <input type="text" class="form-control border-input" id="usernameId" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label class="text-white"><i class="fa fa-key"></i> Password</label>
+                        <input type="password" class="form-control border-input" id="pwdId" placeholder="">
+                    </div>
+                    <button type="button" class="btn btn-success btn-block" onclick="loginUser()">Login</button>
+                </div>
+                <div class="signupCls" id="signUpId">
+                    <div class="form-group">
+                        <label for="patientNameId" class="text-white">Full Name</label>
+                        <input type="text" class="form-control border-input" id="userFullNameId" value="" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emailId" class="text-white">Email</label>
+                        <input type="email" class="form-control border-input" id="userEmailId" value="" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactId" class="text-white">Contact no.</label>
+                        <input type="number" class="form-control border-input" id="contactId" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientNameId" class="text-white">User Name</label>
+                        <input type="text" class="form-control border-input" id="userNameId" value="" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="passwordId" class="text-white">Create Password</label>
+                        <input type="password" class="form-control border-input" id="passwordId" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="text-white">User Type</label>
+                        <div class="form-check">
+                            <label class="form-check-label text-white">
+                                <input type="radio" class="form-check-input" name="userTypeRadio"
+                                    value="STORE-OWNER">Store Owner
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label text-white">
+                                <input type="radio" class="form-check-input" name="userTypeRadio"
+                                    value="CUSTOMER">Customer
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="border btn btn-light" data-dismiss="modal"
+                            onclick="resetData()">Clear</button>
+                        <button type="button" class="border btn btn-success" onclick="isValidUser()">Register</button>
+                    </div>
+                </div>
+                <div class="form-group mt-2" style="text-align: center;">
+                    <label class="form-check-label text-white loginCls" id="footerId">
+                        Create new account <a type="button" class="text-success" onclick="isLoginType(false)">Here</a>
+                    </label>
+                    <label class="form-check-label text-white signupCls" id="loginFooterId">
+                        Already have account? <a class="text-success" type="button" onclick="isLoginType(true)">Login
+                            Here</a>
+                    </label>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
