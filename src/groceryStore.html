@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<title>Online Grocery Store</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="./groceryStore.js"></script>
+<style>
+    /* .bg-img {
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background: url(bgWall.jpg);
+        background-size: cover;
+    } */
+
+    .badge {
+        position: absolute;
+        font-size: xx-small;
+        margin-left: -5px;
+        margin-top: -10px;
+        background-color: red;
+        color: white;
+    }
+
+    .clearfix {
+        border: 1px solid #ddd;
+        margin-top: 20px;
+        padding: 5px 5px 4px 0px;
+    }
+
+    .btn-success {
+        color: #fff;
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+</style>
+
+<body ng-app="myApp" ng-controller="myCtrl" ng-init="onload();" class="bg-img">
+    <nav class="navbar navbar-expand-lg navbar-dark"
+        style="background-image: linear-gradient(to right,#2f7c54, rgba(255,0,0,0)); background-color: #0f3c11;">
+        <img src="./logo.jpg" style="height: 43px;">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+            aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active menuCls" id="productTabId" menuType="PRODUCT">
+                    <a class="nav-link" href="#" ng-click="switchMenu('PRODUCT','productTabId')">Product</a>
+                </li>
+                <!-- <li class="nav-item menuCls" ng-if="userName =='STORE-OWNER'" menuType="ADD_ITEAM" id="addIteamTabId">
+                    <a class="nav-link" href="#" ng-click="switchMenu('ADD_ITEAM','addIteamTabId')">Add
+                        Iteam</a>
+                </li> -->
+
+                <li class="nav-item menuCls" menuType="HISTORY" id="orderHistoryTabId">
+                    <a class="nav-link" href="#" ng-click="switchMenu('HISTORY','orderHistoryTabId')">Order Details</a>
+                </li>
+                <li class="nav-item menuCls" menuType="COMMUNICATION" id="communicationTabId">
+                    <a class="nav-link" href="#"
+                        ng-click="switchMenu('COMMUNICATION','communicationTabId')">Communication</a>
+                </li>
+                <li class="nav-item menuCls" menuType="FEEDBACK" id="feedBackTabId">
+                    <a class="nav-link" href="#" ng-click="switchMenu('FEEDBACK','feedBackTabId')">Feedback</a>
+                </li>
+            </ul>
+            <span class="navbar-text pr-4" style="cursor: pointer;" ng-if="userName !='STORE-OWNER'">
+                <i class="fa fa-shopping-cart" style="font-size: 20px;" data-toggle="modal" data-target="#cartModalId"
+                    ng-click="cartDetails()">
+                    <!-- <i class="fa fa-bell-o" style="font-size: 18px; color: white; margin-right: 15px" type="button" id="dropdownMenuButton1" 
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+                    <span class='badge badge-pill' ng-hide="cartCount == 0">
+                        {{cartCount}}
+                    </span>
+                </i>
+            </span>
+            <span class="navbar-text" style="cursor: pointer;">
+                <i class="fa fa-sign-out" style="font-size: 20px;" ng-click="logout()"></i>
+            </span>
+        </div>
+    </nav>
+    <!-- Cart Modal -->
+    <div class="modal fade" id="cartModalId">
+        <div class="modal-dialog">
+            <div class="modal-content" style="width: 900px; margin-left: -190px;;">
+                <!-- Modal Header -->
+                <div class="modal-header bg-success">
+                    <h4 class="modal-title text-white">Order Place</h4>
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body" id="ordeCartListDIvId">
+                    <form>
+                        <div class="col-md-12">
+                            <div class="col-6">
+                                <label for="">Drop Location</label>
+                                <textarea class="form-control" ng-model="droplocation"></textarea>
+                            </div>
+                            <table class="table">
+                                <thead>
+                                    <th>Product Name</th>
+                                    <th>Product no.</th>
+                                    <th>Price</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th>Remove</th>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="data in productOrderList track by $index">
+                                        <td>{{data.productName}}</td>
+                                        <td>{{data.productNum}}</td>
+                                        <td>{{data.price}}</td>
+                                        <td>{{data.type}}</td>
+                                        <td>{{data.productDescription}}</td>
+                                        <td><button ng-click="removeProductOrderList(data, $index)" title="Remove"
+                                                class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6">Bill Amount : </label><strong>${{toalCost}}</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="reset" class="border btn btn-light" data-dismiss="modal">Close</button>
+                    <button type="button" class="border btn btn-success text-white" ng-click="placedOrder()">Placed
+                        Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="orderDivId" style="margin: 12px 12px 0 12px;">
+        <div class="row">
+            <div class="col-md-6 mb-3" ng-if="userName !='STORE-OWNER'">
+                <label>Select Store</label>
+                <select class="form-control" ng-model="$parent.filterHotelIteam"
+                    ng-change="filterResturantMenu(filterHotelIteam)">
+                    <option value="">Select</option>
+                    <option value="{{obj.userId}}" ng-repeat="obj in adminList">{{obj.userName}}</option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Search Product</label>
+                <input class="form-control" placeholder="Write here to search" id="search">
+            </div>
+        </div>
+        <div class="row">
+            <div ng-show="userName =='STORE-OWNER'">
+                <button title="Add" data-toggle="modal" data-target="#addEditProductModalId"
+                    ng-click="isAddService(true)" class="btn btn-success"><i class="fa fa-plus"></i></button>
+                <button data-toggle="modal" ng-disabled="!isEdit" data-target="#addEditProductModalId" title="Edit"
+                    class="btn btn-success"><i class="fa fa-pencil"></i></button>
+            </div>
+            <table class="table" id="prodctTable">
+                <tr>
+                    <th>Product Name</th>
+                    <th>Product no.</th>
+                    <th>Price</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Description</th>
+                    <th>Edit</th>
+                    <th ng-if="userName !='STORE-OWNER'">Add to cart</th>
+                </tr>
+                <tr ng-repeat="data in productList">
+                    <td>{{data.productName}}</td>
+                    <td>{{data.productNum}}</td>
+                    <td>{{data.price}}</td>
+                    <td>{{data.type}}</td>
+                    <td>{{data.quantity}}</td>
+                    <td>{{data.productDescription}}</td>
+                    <td style="text-align: center;">
+                        <input title="Select" type="checkbox" class="form-check-input edit-check-cls"
+                            ng-click="editProductDetails($event, data)">
+                    </td>
+                    <td ng-if="userName !='STORE-OWNER'">
+                        <button ng-click="addToCart(data)" ng-disabled="data.quantity == 0"
+                            class="btn btn-success btn-sm">Add
+                            to cart</button>
+                    </td>
+                </tr>
+            </table>
+            <!-- <div class="col-sm-4 mb-3" ng-repeat="data in productList">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{data.title}}</h5>
+                        <p class="card-text">{{data.description}}
+                            <strong>$ {{data.price}}</strong>
+                        </p>
+                        <p class="card-text">Calories
+                            <strong> {{data.calories}}</strong>
+                        </p>
+                        <button ng-if="userName !='STORE-OWNER'" ng-click="addToCart(data)"
+                            class="btn btn-success btn-sm">Add
+                            to cart</button>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <!-- ADD/EDIT PRODUCT MODAL-->
+        <div class="modal fade" id="addEditProductModalId">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header bg-success">
+                        <h4 class="modal-title text-white">Product</h4>
+                        <button type="button" class="close" data-dismiss="modal">×</button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <form class="mt-3">
+
+                            <div class="form-group">
+                                <label> Product Name</label>
+                                <input type="text" class="form-control" id="foodNameId"
+                                    ng-model="productData.productName">
+                            </div>
+                            <div class="form-group">
+                                <label> Product no.</label>
+                                <input type="number" class="form-control" id="priceId"
+                                    ng-model="productData.productNum">
+                            </div>
+                            <div class="form-group">
+                                <label> Price</label>
+                                <input type="number" class="form-control" id="priceId" ng-model="productData.price">
+                            </div>
+                            <div class="form-group">
+                                <label>Type</label>
+                                <input type="text" class="form-control" id="calories" ng-model="productData.type">
+                            </div>
+                            <div class="form-group">
+                                <label> Quantity</label>
+                                <input type="number" class="form-control" id="priceId" ng-model="productData.quantity">
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea class="form-control" ng-model="productData.productDescription"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="reset" class="border btn btn-light" data-dismiss="modal">Close</button>
+                        <button type="button" class="border btn btn-success" ng-click="addIteam()">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Place Order Modal -->
+        <div class="modal fade" id="placeOrderModalId">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header bg-success">
+                        <h4 class="modal-title text-white">Add Order</h4>
+                        <button type="button" class="close" data-dismiss="modal">×</button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-row">
+                                <div class="col-md-12 mb-3">
+                                    <strong class="text-success">Name : </strong><span>{{orderDetails.title}}</span><br>
+                                    <strong class="text-success">Price :
+                                    </strong><span>{{orderDetails.price}}</span><br>
+                                    <strong class="text-success">Details :
+                                    </strong><span>{{orderDetails.description}}</span><br><br>
+                                    <label for="deliveryAddressID">Delivery Address</label>
+                                    <textarea class="form-control" id="deliveryAddressID"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="reset" class="border btn btn-light" data-dismiss="modal">Close</button>
+                        <button type="button" class="border btn btn-success" ng-click="addOrder()">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  Add Iteam  -->
+    <div class="col-md-5 justify-content-center" style="margin-left: 27%;" id="iteamAddDivId">
+        <form class="mt-3">
+            <div class="form-group">
+                <label> Name of Food</label>
+                <input type="text" class="form-control" id="foodNameId">
+            </div>
+            <div class="form-group">
+                <label> Price</label>
+                <input type="number" class="form-control" id="priceId">
+            </div>
+            <div class="form-group">
+                <label>Calories</label>
+                <input type="text" class="form-control" id="calories">
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea class="form-control" id="descriptionId"></textarea>
+            </div>
+
+            <button type="button" class="btn btn-success btn-block" ng-click="addIteam()">Add</button>
+        </form>
+    </div>
+    <!-- Feed Back -->
+    <div id="feedbackDivId">
+        <div class="row p-3" ng-if="userName !='STORE-OWNER'">
+            <div class="col-md-3 ">
+                <label>Select Store</label>
+                <select class="form-control" ng-model="feedBack.storeName">
+                    <option value="">Select</option>
+                    <option value="{{obj.userFullNameId}}" ng-repeat="obj in adminList">{{obj.userFullNameId}}</option>
+                </select>
+            </div>
+            <div class="col-md-4 ">
+                <label>Comment</label>
+                <textarea class="form-control" ng-model="feedBack.comment"></textarea>
+            </div>
+            <div class="col-md-2 mt-4">
+                <button class="btn btn-success" ng-click="feedBackAdd()">Feedback</button>
+            </div>
+        </div>
+        <div>
+            <table class="table">
+                <tr>
+                    <th>Name</th>
+                    <th>Comment</th>
+                </tr>
+                <tbody>
+                    <tr ng-repeat="obj in feedbackList">
+                        <td>{{obj.storeName}}</td>
+                        <td>{{obj.comment}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Comunication -->
+    <div id="comunicationDivId" class="row p-3">
+
+        <div class="col-md-6" ng-if="userName !='STORE-OWNER'">
+            <label>Select Store</label>
+            <select class="form-control" ng-model="$parent.selectedStoreData"
+                ng-options="item.userFullNameId for item in adminList">
+                <option value="">Select</option>
+                <!-- <option value="{{obj.userFullNameId}}" ng-repeat="obj in adminList">{{obj.userFullNameId}}</option> -->
+            </select>
+        </div>
+        <div class="col-md-6" ng-if="userName !='STORE-OWNER'">
+            <label for="">Enter your queries</label>
+            <textarea class="form-control" id="querriesId"></textarea>
+            <button class="btn btn-success btn-sm mt-1 float-right" ng-click="comunicationAdd()">Submit</button>
+        </div>
+        <div class="col-md-12">
+            <div ng-repeat="data in comunicationData">
+                <span ng-if="userName =='STORE-OWNER'">{{data.clientData.userFullNameId}}</span><br>
+                <span ng-if="userName !='STORE-OWNER'">{{data.storeData.userFullNameId}}</span><br>
+                <strong>Q: {{data.qestion}}</strong><br>
+                <span> <strong>A: </strong>{{data.answer}}</span>
+                <div style="display: flex; width: 50%;" ng-if="userName =='STORE-OWNER'">
+                    <input type="text" class="form-control ml-2" id="answerBoxId-{{$index}}"
+                        placeholder="Enter your answer">
+                    <button class="btn btn-success btn-sm ml-1 float-right"
+                        ng-click="answerUpdate(data, $index)">Submit</button>
+                </div>
+                <br>
+                <hr>
+            </div>
+        </div>
+    </div>
+    <!-- Order details -->
+    <div class="col-md-12 p-0" id="biilingId">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Product Names</th>
+                    <th scope="col">Order Date</th>
+                    <th ng-if="userName !='STORE-OWNER'">Store Name</th>
+                    <th>Drop Location</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="data in viewOrderTableData">
+                    <td scope="col">
+                        <div ng-repeat="obj in data.productOrderList"> <span>{{obj.productName}}</span><br></div>
+                    </td>
+                    <td scope="col">{{data.orderDate}}</td>
+                    <td ng-if="userName !='STORE-OWNER'">
+                        {{adminOriginalList[data.productOrderList[0].adminId].userFullNameId}}
+                    </td>
+                    <td>{{data.droplocation}}</td>
+                    <td scope="col">{{data.price}}</td>
+                    <td scope="col">
+                        <button ng-show="data.status == 'Payment Pending' && userName !='STORE-OWNER'" type="button"
+                            class="border btn-small btn-success rounded" ng-click="updateStatus(data)">Pay</button>
+                        <span
+                            ng-show="data.status != 'Payment Pending'&& userName !='STORE-OWNER'">{{data.status}}</span>
+                        <span ng-show="userName =='STORE-OWNER'">{{data.status}}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
